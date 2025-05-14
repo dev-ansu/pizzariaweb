@@ -1,0 +1,43 @@
+.headerContainer{
+    height: 5rem;
+}
+
+.headerContent{
+    max-width: 1280px;
+    height: 5rem;
+    margin:0 auto;
+    padding:0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    nav{
+        display: flex;
+        align-items: center;
+        gap:14px;
+        a{
+            display: flex;
+            gap:2px;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: all .2s ease-in-out;
+            &:hover{
+                color:var(--red-900)
+            }
+        }
+        button{
+            border:0;
+            background-color: transparent;
+            margin-left: 16px;
+            transition: all .2s ease-in-out;
+            color: #fff;
+            &:hover{
+                transform: scale(1.1);
+                
+                color:var(--red-900);
+            }
+        }
+    }
+}

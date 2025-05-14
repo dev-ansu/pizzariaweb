@@ -1,95 +1,67 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import styles from "./styles.module.scss"
+import { Logo } from "@/components/ui/Logo";
+import Link from "next/link";
+import { SignInForm } from "../components/ui/Form/SignInForm";
+import { Form } from "@/components/ui/Form";
+import { SignInFormData, SignInValidatorSchema } from "@/_validators/SignInValidator";
+import { useTransition } from "react";
+import { auth } from "../actions/signin.action";
+import { useSetFieldErrors } from "@/hook/useSetFieldErrors";
+import { toast, ToastContainer } from "react-toastify";
+import { AnimatedDiv } from "@/components/ui/AnimatedDiv";
+import LoadingIndicator from "./LoadingIndicator";
+import {redirect} from "next/navigation";
+
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const {errorsData, setFieldErrors} = useSetFieldErrors();
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    const [isSaving, startIsSaving] = useTransition();
+  
+  const onSubmit = async(data: SignInFormData)=>{
+          startIsSaving(async()=>{
+              const result = await auth(data);
+
+          if (!result.ok && result.fieldErrors) {
+            setFieldErrors(result.fieldErrors); // direto sem precisar fazer parse de string
+            return;
+          }
+
+            
+            if(result.ok){
+              toast.success(result.message)
+              if(result.data.token){
+                redirect("/dashboard")
+              }else{
+                toast.error("O login falhou. Tente novamente!")
+              }
+            }else{
+              toast.error(result.message);
+            }
+          })
+      }
+
+  return (
+      <>
+
+          <AnimatedDiv className={styles.containerCenter}>
+            <Logo />
+
+            <section className={styles.login}>
+              <Form isValidSubmit={onSubmit} schema={SignInValidatorSchema}>
+                
+                <SignInForm isSaving={isSaving} errorsData={errorsData} />
+
+              </Form>
+
+              <Link href="/signup" className={styles.text}>
+                Não possui uma conta? Cadastre-se! <LoadingIndicator />
+              </Link>
+            </section>  
+          </AnimatedDiv>     
+      
+        
+      </>
   );
 }

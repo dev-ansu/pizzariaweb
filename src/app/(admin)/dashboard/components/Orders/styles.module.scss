@@ -1,0 +1,65 @@
+@import "../../../../spin.scss";
+
+.container{
+    max-width: 720px;
+    margin:20px auto;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    h1{
+        color: var(--white)
+    }
+}
+.emptyItems{
+    color:var(--gray-100);
+    font-size: 18px;
+}
+    
+.containerHeader{
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-top:24px;
+    button{
+        background-color: transparent;
+        border: none;
+         &:hover{
+            animation: spin 2s linear infinite;
+            display: inline-block;
+        }
+    }
+}
+
+.listOrders{
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+
+    gap:16px;
+    
+    
+}
+
+.orderItem{
+    display: flex;
+    background-color: var(--dark-900);
+    align-items: center;
+    border:0;
+    font-size: 18px;
+    border-radius: 8px;
+    color: var(--white);
+    transition: all 0.3s ease-in-out;
+    &:hover{
+        filter: brightness(1.20);
+    }
+
+}
+
+.tag{
+    width: 9px;
+    background-color: var(--green-900);
+    height: 60px;
+    border-radius: 6px 0 0 6px;
+    margin-right: 16px;
+}
